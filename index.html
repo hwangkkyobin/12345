@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moving Windows Simulation</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+    }
+    .window {
+      position: absolute;
+      width: 150px;
+      height: 100px;
+      background: white;
+      border: 2px solid gray;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      color: black;
+      text-align: center;
+      line-height: 100px;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // 가상 창 생성
+    const createWindows = (count) => {
+      const windows = [];
+      for (let i = 0; i < count; i++) {
+        const div = document.createElement("div");
+        div.className = "window";
+        div.style.left = `${Math.random() * window.innerWidth}px`;
+        div.style.top = `${Math.random() * window.innerHeight}px`;
+        div.textContent = `Window ${i + 1}`;
+        document.body.appendChild(div);
+        windows.push({ element: div, dx: Math.random() > 0.5 ? 1 : -1, dy: Math.random() > 0.5 ? 1 : -1 });
+      }
+      return windows;
+    };
+
+    // 가상 창 움직이기
+    const moveWindows = (windows) => {
+      setInterval(() => {
+        windows.forEach((win) => {
+          const rect = win.element.getBoundingClientRect();
+          let newLeft = rect.left + win.dx * 2;
+          let newTop = rect.top + win.dy * 2;
+
+          // 화면 경계 체크 및 반전
+          if (newLeft <= 0 || newLeft + rect.width >= window.innerWidth) win.dx *= -1;
+          if (newTop <= 0 || newTop + rect.height >= window.innerHeight) win.dy *= -1;
+
+          win.element.style.left = `${newLeft}px`;
+          win.element.style.top = `${newTop}px`;
+        });
+      }, 10);
+    };
+
+    const windows = createWindows(1000); // 가상 창 1000개 생성
+    moveWindows(windows); // 창 움직이기 시작
+  </script>
+</body>
+</html>
